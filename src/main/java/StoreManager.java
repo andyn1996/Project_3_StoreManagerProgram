@@ -2,73 +2,68 @@ import javax.swing.*;
 
 public class StoreManager {
 
-    public static final String DBMS_SQ_LITE = "SQLite";
-    public static final String DB_FILE = "/Users/andyni/Desktop/COMP3700Store.db";
+    public static String dbms = "Network";
+    public static String path = "/Users/andyni/Desktop/COMP3700Store.db";
 
 
-    IDataAdapter adapter = null;
+    IDataAdapter dataAdapter = null;
     private static StoreManager instance = null;
 
     public static StoreManager getInstance() {
 
-//        if (instance == null) {
-//            String dbfile = DB_FILE;
-//                JFileChooser fc = new JFileChooser();
-//                if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-//                    dbfile = fc.getSelectedFile().getAbsolutePath();
-//                }
-//            instance = new StoreManager(DBMS_SQ_LITE, DB_FILE);
-//        }
-//        return instance;
         if (instance == null) {
-
-            String dbfile = DB_FILE;
-            if (dbfile.length() == 0) {
-                JFileChooser fc = new JFileChooser();
-                if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
-                    dbfile = fc.getSelectedFile().getAbsolutePath();
-            }
-            instance = new StoreManager(DBMS_SQ_LITE, dbfile);
+            instance = new StoreManager(dbms, path);
         }
+
         return instance;
     }
 
     private StoreManager(String dbms, String dbfile) {
-        if (dbms.equals("Oracle"))
-            adapter = new OracleDataAdapter();
-        else
-        if (dbms.equals("SQLite"))
-            adapter = new SQLiteDataAdapter();
+        if (dbms.equals("Network")) {
+            dataAdapter = new NetworkDataAdapter();
+        }
 
-        adapter.connect(dbfile);
-        ProductModel product = adapter.loadProduct(3);
+        if (dbms.equals("Oracle")) {
+            dataAdapter = new OracleDataAdapter();
+        }
+        else if (dbms.equals("SQLite")) {
+            dataAdapter = new SQLiteDataAdapter();
+        }
 
-        System.out.println("Loaded product: " + product);
+        System.out.println("Running parameters: " + dbms + " to " + dbfile);
+        dataAdapter.connect(dbfile);
     }
 
     public IDataAdapter getDataAdapter() {
-        return adapter;
+        return dataAdapter;
     }
 
     public void setDataAdapter(IDataAdapter a) {
-        adapter = a;
+        dataAdapter = a;
     }
 
     public void run() {
-        MainUI ui = new MainUI();
+        LoginUI ui = new LoginUI();
         ui.view.setVisible(true);
         ui.view.setLocationRelativeTo(null);
     }
 
     public static void main(String[] args) {
         System.out.println("Hello class!");
+        if (args.length > 0) { // having runtime arguments
+            dbms = args[0];
+            if (args.length == 1) { // do not have 2nd arguments for dbfile
+                if (dbms.equals("SQLite")) {
+                    JFileChooser fc = new JFileChooser();
+                    if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+                        path = fc.getSelectedFile().getAbsolutePath();
+                }
+                else
+                    path = JOptionPane.showInputDialog("Enter address of database server as host:port");
+            }
+            else
+                path = args[1];
+        }
         StoreManager.getInstance().run();
-//        MainUI ui = new MainUI();
-//        ui.run();
-//        AddProductUI ap = new AddProductUI();
-//        AddCustomerUI ac = new AddCustomerUI();
-//        ap.run();
-//        ac.run();
     }
-
 }

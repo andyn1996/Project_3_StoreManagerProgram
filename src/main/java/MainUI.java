@@ -7,9 +7,11 @@ public class MainUI {
 
     public JFrame view;
 
-    public JButton btnAddProduct = new JButton("Add New Product");
-    public JButton btnAddCustomer = new JButton("Add New Customer");
-    public JButton btnAddPurchase = new JButton("Add New Purchase");
+    public JButton btnManageProduct = new JButton("Manage Product");
+    public JButton btnManagegCustomer = new JButton("Manage Customer");
+    public JButton btnAddPurchase = new JButton("Manage Purchase");
+
+//    public JButton btnUpdateProduct = new JButton("Update Product Information");
 
     public MainUI() {
         this.view = new JFrame();
@@ -27,25 +29,26 @@ public class MainUI {
         view.getContentPane().add(titleLayout);
 
         JPanel panelButtons = new JPanel(new FlowLayout());
-        panelButtons.add(btnAddProduct);
-        panelButtons.add(btnAddCustomer);
+        panelButtons.add(btnManageProduct);
+        panelButtons.add(btnManagegCustomer);
         panelButtons.add(btnAddPurchase);
+//        panelButtons.add(btnUpdateProduct);
         view.getContentPane().add(panelButtons);
 
 
-        btnAddProduct.addActionListener(new ActionListener() {
+        btnManageProduct.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                AddProductUI ap = new AddProductUI();
+                ManageProductUI ap = new ManageProductUI();
                 ap.run();
             }
         });
-        btnAddCustomer.addActionListener(new ActionListener() {
+        btnManagegCustomer.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                AddCustomerUI ac = new AddCustomerUI();
+                ManageCustomerUI ac = new ManageCustomerUI();
                 ac.run();
             }
         });
@@ -54,9 +57,17 @@ public class MainUI {
 
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                AddPurchaseUI ap = new AddPurchaseUI();
+                ManagePurchaseUI ap = new ManagePurchaseUI();
                 ap.run();
             }
         });
+
+//        btnUpdateProduct.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent actionEvent) {
+//                ManageProductUI ui = new ManageProductUI();
+//                ui.run();
+//            }
+//        });
     }
 }

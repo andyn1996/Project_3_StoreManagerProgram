@@ -66,24 +66,53 @@ public class SQLiteDataAdapter implements IDataAdapter {
     public int saveProduct(ProductModel product) {
 
         try {
+            Statement stmt = conn.createStatement();
+            ProductModel p = loadProduct(product.mProductID);
+            if (p != null) {
+                stmt.executeUpdate("DELETE FROM Products WHERE ProductID = " + product.mProductID);
+            }
             String sql = "INSERT INTO Products(ProductID, Name, ExpirationDate, Price, TaxRate," +
                     " Quantity, Supplier, ManufacturedDate) VALUES " + product;
             System.out.println(sql);
-            Statement stmt = conn.createStatement();
             stmt.executeUpdate(sql);
-
         }
-
         catch (Exception e) {
-
             String msg = e.getMessage();
             System.out.println(msg);
-            if (msg.contains("UNIQUE constraint failed"))
-                return PRODUCT_DUPLICATE_ERROR;
-
+            if (msg.contains("UNIQUE constraint failed")) {
+                return PRODUCT_SAVE_FAILED;
+            }
         }
 
-        return PRODUCT_SAVED_OK;
+        return PRODUCT_SAVE_OK;
+    }
+
+    @Override
+    public PurchaseHistoryModel loadPurchaseHistory(int id) {
+        PurchaseHistoryModel res = new PurchaseHistoryModel();
+        try {
+            String sql = "SELECT * FROM Purchases WHERE CustomerId = " + id;
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                PurchaseModel purchase = new PurchaseModel();
+                purchase.mCustomerID = id;
+                purchase.mPurchaseID = rs.getInt("PurchaseID");
+                purchase.mProductID = rs.getInt("ProductID");
+                purchase.mPrice = rs.getDouble("Price");
+                purchase.mQuantity = rs.getDouble("Quantity");
+                purchase.mCost = rs.getDouble("Cost");
+                purchase.mTax = rs.getDouble("Tax");
+                purchase.mTotal = rs.getDouble("Total");
+                purchase.mDate = rs.getString("Date");
+
+                res.purchases.add(purchase);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return res;
     }
 
     public CustomerModel loadCustomer(int customerID) {
@@ -109,47 +138,99 @@ public class SQLiteDataAdapter implements IDataAdapter {
     public int saveCustomer(CustomerModel customer) {
 
         try {
+            Statement stmt = conn.createStatement();
+            CustomerModel c = loadCustomer(customer.mCustomerID);
+
+            if (c != null) {
+                stmt.executeUpdate("DELETE FROM Customers WHERE CustomerID = " + customer.mCustomerID);
+            }
+
             String sql = "INSERT INTO Customers(CustomerID, Name, Address, Phone) VALUES " + customer;
             System.out.println(sql);
-            Statement stmt = conn.createStatement();
-            stmt.executeUpdate(sql);
-        }
 
+            stmt.executeUpdate(sql);
+
+        }
         catch (Exception e) {
 
             String msg = e.getMessage();
             System.out.println(msg);
-            if (msg.contains("UNIQUE constraint failed"))
-                return CUSTOMER_DUPLICATE_ERROR;
-
+            if (msg.contains("UNIQUE constraint failed")) {
+                return CUSTOMER_SAVE_FAILED;
+            }
         }
 
-        return CUSTOMER_SAVED_OK;
+        return CUSTOMER_SAVE_OK;
     }
 
     @Override
-    public PurchaseModel loadPurchase(int id) {
+    public PurchaseModel loadPurchase(int purchaseID) {
         PurchaseModel purchase = new PurchaseModel();
+
+        try {
+            String sql = "SELECT * FROM Purchases WHERE PurchaseID = " + purchaseID;
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            purchase.mPurchaseID = rs.getInt("PurchaseID");
+            purchase.mProductID = rs.getInt("ProductID");
+            purchase.mCustomerID = rs.getInt("CustomerID");
+            purchase.mQuantity = rs.getDouble("Quantity");
+            purchase.mDate = rs.getString("Date");
+            purchase.mCost = rs.getDouble("Cost");
+            purchase.mTax = rs.getDouble("Tax");
+            purchase.mPrice = rs.getDouble("Price");
+            purchase.mTotal = rs.getDouble("Total");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return purchase;
     }
 
     @Override
     public int savePurchase(PurchaseModel purchase) {
         try {
+            Statement stmt = conn.createStatement();
+            PurchaseModel p = loadPurchase(purchase.mPurchaseID);
+
+            if (p != null) {
+                stmt.executeUpdate("DELETE FROM Purchases WHERE PurchaseID = " + purchase.mPurchaseID);
+            }
+
             String sql = "INSERT INTO Purchases VALUES " + purchase;
             System.out.println(sql);
-            Statement stmt = conn.createStatement();
+
             stmt.executeUpdate(sql);
 
         } catch (Exception e) {
             String msg = e.getMessage();
             System.out.println(msg);
             if (msg.contains("UNIQUE constraint failed"))
-                return PURCHASE_DUPLICATE_ERROR;
+                return PURCHASE_SAVE_FAILED;
         }
 
-        return PURCHASE_SAVED_OK;
+        return PURCHASE_SAVE_OK;
 
+    }
+
+    public UserModel loadUser(String username) {
+        UserModel user = null;
+
+        try {
+            String sql = "SELECT * FROM Users WHERE Username = \"" + username + "\"";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                user = new UserModel();
+                user.mUsername = username;
+                user.mPassword = rs.getString("Password");
+                user.mFullname = rs.getString("Fullname");
+                user.mUserType = rs.getInt("Usertype");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return user;
     }
 }
 
