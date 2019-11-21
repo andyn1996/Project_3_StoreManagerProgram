@@ -48,6 +48,12 @@ public class ManagePurchaseUI {
         view.getContentPane().setLayout(new BoxLayout(view.getContentPane(), BoxLayout.PAGE_AXIS));
 
         JPanel line = new JPanel(new FlowLayout());
+
+        line.add(btnLoad);
+        line.add(btnSave);
+        view.getContentPane().add(line);
+
+        line = new JPanel(new FlowLayout());
         line.add(new JLabel("PurchaseID "));
         line.add(txtPurchaseID);
         line.add(labDate);
@@ -75,11 +81,6 @@ public class ManagePurchaseUI {
         line.add(labCost);
         line.add(labTax);
         line.add(labTotalCost);
-        view.getContentPane().add(line);
-
-        line = new JPanel(new FlowLayout());
-        line.add(btnLoad);
-        line.add(btnSave);
         view.getContentPane().add(line);
 
         txtProductID.getDocument().addDocumentListener(new ProductChangeListener());
