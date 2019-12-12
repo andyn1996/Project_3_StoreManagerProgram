@@ -11,7 +11,9 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
-public class ManagePurchaseUI {
+public class ManagePurchaseCustomerUI {
+
+    public UserModel user = null;
 
     public final static double TAX_RATE = 0.095;
 
@@ -19,7 +21,7 @@ public class ManagePurchaseUI {
 
     public JButton btnSave = new JButton("Save Purchase");
     //public JButton btnCancel = new JButton("Cancel");
-    public JButton btnLoad = new JButton("Load Purchase");
+    //public JButton btnLoad = new JButton("Load Purchase");
 
     public JTextField txtPurchaseID = new JTextField(10);
     public JTextField txtCustomerID = new JTextField(10);
@@ -40,7 +42,8 @@ public class ManagePurchaseUI {
     CustomerModel customer;
     PurchaseModel purchase;
 
-    public ManagePurchaseUI() {
+    public ManagePurchaseCustomerUI(UserModel user) {
+        this.user = user;
         this.view = new JFrame();
 
         view.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -51,7 +54,7 @@ public class ManagePurchaseUI {
 
         JPanel line = new JPanel(new FlowLayout());
 
-        line.add(btnLoad);
+        //line.add(btnLoad);
         line.add(btnSave);
         view.getContentPane().add(line);
 
@@ -64,7 +67,10 @@ public class ManagePurchaseUI {
         line = new JPanel(new FlowLayout());
         line.add(new JLabel("CustomerID "));
         line.add(txtCustomerID);
+        txtCustomerID.setText(Integer.toString(user.mCustomerID));
+        txtCustomerID.setEditable(false);
         line.add(labCustomerName);
+        labCustomerName.setText(user.mFullname);
         view.getContentPane().add(line);
 
         line = new JPanel(new FlowLayout());
@@ -90,7 +96,7 @@ public class ManagePurchaseUI {
         txtQuantity.getDocument().addDocumentListener(new QuantityChangeListener());
 
         btnSave.addActionListener(new SaveButtonListener());
-        btnLoad.addActionListener(new LoadButtonListener());
+        //btnLoad.addActionListener(new LoadButtonListener());
     }
 
     public void run() {
@@ -421,6 +427,8 @@ public class ManagePurchaseUI {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             String id = txtPurchaseID.getText();
+            purchase.mCustomerID = user.mCustomerID;
+
 
             if (id.length() == 0) {
                 JOptionPane.showMessageDialog(null, "PurchaseID cannot be null!");

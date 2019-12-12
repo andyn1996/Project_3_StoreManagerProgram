@@ -11,7 +11,7 @@ public class AdminUI {
 
     public JButton btnSetUpSystem = new JButton("Set Up System");
     public JButton btnAddUser = new JButton("Add Users");
-    public JButton btnDeleteUser = new JButton("Delete Users");
+    public JButton btnDeleteUser = new JButton("Change User Type");
 
     public AdminUI(UserModel user) {
 
@@ -26,7 +26,7 @@ public class AdminUI {
 
         JLabel title = new JLabel("Store Management System");
 
-        title.setFont (title.getFont ().deriveFont (24.0f));
+        title.setFont(title.getFont ().deriveFont (24.0f));
         view.getContentPane().add(title);
 
         JPanel panelUser = new JPanel(new FlowLayout());
@@ -46,14 +46,16 @@ public class AdminUI {
         btnAddUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
+                AddNewUserUI ap = new AddNewUserUI();
+                ap.run();
             }
         });
 
         btnDeleteUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
+                ChangeUserTypeUI ap = new ChangeUserTypeUI();
+                ap.run();
             }
         });
 

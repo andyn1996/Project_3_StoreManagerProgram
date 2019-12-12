@@ -1,7 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class PurchaseHistoryUI {
+public class AllPurchaseHistoryUI {
 
     public JFrame view;
     //public JList purchases;
@@ -18,24 +18,24 @@ public class PurchaseHistoryUI {
 //    public JTextField txtAddress = new JTextField(20);
 
 
-    public PurchaseHistoryUI(UserModel user) {
+    public AllPurchaseHistoryUI(UserModel user) {
         this.user = user;
 
         this.view = new JFrame();
 
         view.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        view.setTitle("View Purchase History - Customer View");
+        view.setTitle("View Purchase History - Manager View");
         view.setSize(600, 400);
         view.getContentPane().setLayout(new BoxLayout(view.getContentPane(), BoxLayout.PAGE_AXIS));
 
-        JLabel title = new JLabel("Purchase history for " + user.mFullname);
+        JLabel title = new JLabel("Purchase History of Store");
 
         title.setFont (title.getFont().deriveFont (24.0f));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         view.getContentPane().add(title);
 
-        PurchaseListModel list = StoreManager.getInstance().getDataAdapter().loadPurchaseHistory(user.mCustomerID);
+        PurchaseListModel list = StoreManager.getInstance().getDataAdapter().loadAllPurchases();
 //        DefaultListModel<String> data = new DefaultListModel<>();
         DefaultTableModel tableData = new DefaultTableModel();
 //        String[] columnNames = {"PurchaseID", "ProductID", "Total"};
@@ -59,7 +59,6 @@ public class PurchaseHistoryUI {
             row[3] = purchase.mTotal;
             tableData.addRow(row);
         }
-
 //        purchases = new JList(data);
 
         purchaseTable = new JTable(tableData);
@@ -68,6 +67,10 @@ public class PurchaseHistoryUI {
 
         view.getContentPane().add(scrollableList);
 
+    }
 
+    public void run() {
+        view.setLocationRelativeTo(null);
+        view.setVisible(true);
     }
 }

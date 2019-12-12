@@ -4,9 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.Scanner;
 
 public class ManageCustomerUI {
 
@@ -212,27 +209,15 @@ public class ManageCustomerUI {
             }
             customer.mPhone = phone;
 
-            try {
-                Socket link = new Socket("localhost", 10007);
-                Scanner input = new Scanner(link.getInputStream());
-                PrintWriter output = new PrintWriter(link.getOutputStream(), true);
+            int result = StoreManager.getInstance().getDataAdapter().saveCustomer(customer);
 
-                MessageModel msg = new MessageModel();
-                msg.code = MessageModel.PUT_CUSTOMER;
-                msg.data = gson.toJson(customer);
-                output.println(gson.toJson(msg));
-
-                msg = gson.fromJson(input.nextLine(), MessageModel.class);
-
-                if (msg.code == MessageModel.OPERATION_FAILED) {
-                    JOptionPane.showMessageDialog(null, "Customer was not saved successfully!");
-                } else {
-                    JOptionPane.showMessageDialog(null, "Customer is SAVED successfully!");
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (result == IDataAdapter.CUSTOMER_SAVE_FAILED) {
+                JOptionPane.showMessageDialog(null, "Customer is NOT saved successfully");
             }
+            else {
+                JOptionPane.showMessageDialog(null, "Customer is saved successfully");
+            }
+
         }
     }
 

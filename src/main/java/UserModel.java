@@ -7,14 +7,15 @@ public class UserModel {
 
     public String mUsername, mPassword, mFullname;
     public int mUserType;
-    public int mCustomerID;
+    public Integer mCustomerID;
 
     public String toString() {
         StringBuilder sb = new StringBuilder("(");
         sb.append("\"").append(mUsername).append("\"").append(",");
         sb.append("\"").append(mPassword).append("\"").append(",");
         sb.append("\"").append(mFullname).append("\"").append(",");
-        sb.append(mUserType).append(")");
+        sb.append(mUserType).append(",");
+        sb.append(mCustomerID).append(")");
         return sb.toString();
     }
 

@@ -87,34 +87,6 @@ public class SQLiteDataAdapter implements IDataAdapter {
         return PRODUCT_SAVE_OK;
     }
 
-    @Override
-    public PurchaseHistoryModel loadPurchaseHistory(int id) {
-        PurchaseHistoryModel res = new PurchaseHistoryModel();
-        try {
-            String sql = "SELECT * FROM Purchases WHERE CustomerId = " + id;
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                PurchaseModel purchase = new PurchaseModel();
-                purchase.mCustomerID = id;
-                purchase.mPurchaseID = rs.getInt("PurchaseID");
-                purchase.mProductID = rs.getInt("ProductID");
-                purchase.mPrice = rs.getDouble("Price");
-                purchase.mQuantity = rs.getDouble("Quantity");
-                purchase.mCost = rs.getDouble("Cost");
-                purchase.mTax = rs.getDouble("Tax");
-                purchase.mTotal = rs.getDouble("Total");
-                purchase.mDate = rs.getString("Date");
-
-                res.purchases.add(purchase);
-            }
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return res;
-    }
-
     public CustomerModel loadCustomer(int customerID) {
         CustomerModel customer = new CustomerModel();
 
@@ -212,6 +184,88 @@ public class SQLiteDataAdapter implements IDataAdapter {
 
     }
 
+    @Override
+    public PurchaseListModel loadPurchaseHistory(int id) {
+
+        PurchaseListModel res = new PurchaseListModel();
+        try {
+            String sql = "SELECT * FROM Purchases WHERE CustomerId = " + id;
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                PurchaseModel purchase = new PurchaseModel();
+                purchase.mCustomerID = id;
+                purchase.mPurchaseID = rs.getInt("PurchaseID");
+                purchase.mProductID = rs.getInt("ProductID");
+                purchase.mPrice = rs.getDouble("Price");
+                purchase.mQuantity = rs.getDouble("Quantity");
+                purchase.mCost = rs.getDouble("Cost");
+                purchase.mTax = rs.getDouble("Tax");
+                purchase.mTotal = rs.getDouble("Total");
+                purchase.mDate = rs.getString("Date");
+
+                res.purchases.add(purchase);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return res;
+    }
+
+    @Override
+    public PurchaseListModel loadAllPurchases() {
+
+        PurchaseListModel res = new PurchaseListModel();
+        try {
+            String sql = "SELECT * FROM Purchases";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                PurchaseModel purchase = new PurchaseModel();
+                purchase.mCustomerID = rs.getInt("CustomerID");
+                purchase.mPurchaseID = rs.getInt("PurchaseID");
+                purchase.mProductID = rs.getInt("ProductID");
+                purchase.mPrice = rs.getDouble("Price");
+                purchase.mQuantity = rs.getDouble("Quantity");
+                purchase.mCost = rs.getDouble("Cost");
+                purchase.mTax = rs.getDouble("Tax");
+                purchase.mTotal = rs.getDouble("Total");
+                purchase.mDate = rs.getString("Date");
+                res.purchases.add(purchase);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return res;
+    }
+
+    @Override
+    public ProductListModel searchProduct(ProductSearchModel search) {
+        ProductListModel res = new ProductListModel();
+        try {
+            String sql = "SELECT * FROM Products WHERE Name LIKE \'%" + search.mProductName + "%\' "
+                    + "AND Price >= " + search.mMinPrice + " AND Price <= " + search.mMaxPrice;
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                ProductModel product = new ProductModel();
+                product.mProductID = rs.getInt("ProductID");
+                product.mName = rs.getString("Name");
+                product.mPrice = rs.getDouble("Price");
+                product.mQuantity = rs.getDouble("Quantity");
+                res.products.add(product);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
     public UserModel loadUser(String username) {
         UserModel user = null;
 
@@ -225,12 +279,39 @@ public class SQLiteDataAdapter implements IDataAdapter {
                 user.mPassword = rs.getString("Password");
                 user.mFullname = rs.getString("Fullname");
                 user.mUserType = rs.getInt("Usertype");
+                user.mCustomerID = rs.getInt("CustomerID");
             }
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return user;
+    }
+
+    @Override
+    public int saveUser(UserModel user) {
+        try {
+            Statement stmt = conn.createStatement();
+            UserModel m = loadUser(user.mUsername);
+
+            if (m != null) {
+                stmt.executeUpdate("DELETE FROM Users WHERE Username = " +  "\"" + m.mUsername + "\"");
+            }
+
+            String sql = "INSERT INTO Users VALUES " + user;
+            System.out.println(sql);
+
+            stmt.executeUpdate(sql);
+
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            System.out.println(msg);
+            if (msg.contains("UNIQUE constraint failed"))
+                return USER_SAVE_FAILED;
+        }
+
+        return USER_SAVE_OK;
+
     }
 }
 

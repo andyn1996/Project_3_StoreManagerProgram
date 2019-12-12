@@ -142,10 +142,10 @@ public class LoginUI {
                     }
 
                     if (user.mUserType == UserModel.MANAGER) {
-                        MainUI ui = new MainUI();
+                        ManagerUI ui = new ManagerUI(user);
                         ui.view.setVisible(true);
                     } else if (user.mUserType == UserModel.CASHIER) {
-                        CashierUI ui = new CashierUI();
+                        CashierUI ui = new CashierUI(user);
                         System.out.println("CustomerUI = " + ui);
                         ui.view.setVisible(true);
                     } else if (user.mUserType == UserModel.ADMIN) {

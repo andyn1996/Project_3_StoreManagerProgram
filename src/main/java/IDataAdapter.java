@@ -18,6 +18,9 @@ public interface IDataAdapter {
     public static final int CUSTOMER_SAVE_OK = 0;
     public static final int CUSTOMER_SAVE_FAILED = 1;
 
+    public static final int USER_SAVE_OK = 700;
+    public static final int USER_SAVE_FAILED = 701;
+
     // Connect to the database
     public int connect(String dbfile);
 
@@ -33,10 +36,13 @@ public interface IDataAdapter {
     public PurchaseModel loadPurchase(int id);
     public int savePurchase(PurchaseModel purchase);
 
-    public PurchaseHistoryModel loadPurchaseHistory(int customerID);
+    public PurchaseListModel loadPurchaseHistory(int customerID);
+    public PurchaseListModel loadAllPurchases();
+    public ProductListModel searchProduct(ProductSearchModel search);
 
     public UserModel loadUser(String username);
-    //public int saveUser(UserModel user);
+    public int saveUser(UserModel user);
+
 
 
 }

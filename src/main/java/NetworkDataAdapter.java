@@ -128,7 +128,7 @@ public class NetworkDataAdapter implements IDataAdapter {
     }
 
     @Override
-    public PurchaseHistoryModel loadPurchaseHistory(int customerID) {
+    public PurchaseListModel loadPurchaseHistory(int customerID) {
         msg.code = MessageModel.GET_PURCHASE_LIST;
         msg.data = Integer.toString(customerID);
 
@@ -141,7 +141,44 @@ public class NetworkDataAdapter implements IDataAdapter {
         if (msg.code == MessageModel.OPERATION_FAILED)
             return null;
         else {
-            return gson.fromJson(msg.data, PurchaseHistoryModel.class);
+            return gson.fromJson(msg.data, PurchaseListModel.class);
+        }
+    }
+
+    @Override
+    public PurchaseListModel loadAllPurchases() {
+        msg.code = MessageModel.GET_ALL_PURCHASES;
+        //msg.data = Integer.toString();
+
+        try {
+            msg = adapter.exchange(msg, host, port);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (msg.code == MessageModel.OPERATION_FAILED)
+            return null;
+        else {
+            return gson.fromJson(msg.data, PurchaseListModel.class);
+        }
+    }
+
+    @Override
+    public ProductListModel searchProduct(ProductSearchModel search) {
+        msg.code = MessageModel.SEARCH_PRODUCT;
+        msg.data = gson.toJson(search);
+
+        try {
+            msg = adapter.exchange(msg, host, port);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (msg.code == MessageModel.OPERATION_FAILED)
+            return null;
+        else {
+
+            return gson.fromJson(msg.data, ProductListModel.class);
         }
     }
 
@@ -161,4 +198,26 @@ public class NetworkDataAdapter implements IDataAdapter {
             return gson.fromJson(msg.data, UserModel.class);
         }
     }
+
+    @Override
+    public int saveUser(UserModel user) {
+        msg.code = MessageModel.PUT_USER;
+        msg.data = gson.toJson(user);
+
+        try {
+            msg = adapter.exchange(msg, host, port);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (msg.code == MessageModel.OPERATION_FAILED)
+            return IDataAdapter.PURCHASE_SAVE_FAILED;
+        else {
+            return IDataAdapter.PURCHASE_SAVE_OK;
+        }
+    }
+
+
+
+
 }

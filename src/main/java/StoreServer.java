@@ -137,6 +137,57 @@ public class StoreServer {
                     }
                     out.println(gson.toJson(msg));  // answer login command!
                 }
+
+                if (msg.code == MessageModel.GET_PURCHASE_LIST) {
+                    int id = Integer.parseInt(msg.data);
+                    PurchaseListModel res = adapter.loadPurchaseHistory(id);
+                    msg.code = MessageModel.OPERATION_OK;
+                    msg.data = gson.toJson(res);
+                    out.println(gson.toJson(msg));  // answer get purchase history!!!
+                }
+
+                if (msg.code == MessageModel.GET_ALL_PURCHASES) {
+                    PurchaseListModel res = adapter.loadAllPurchases();
+                    msg.code = MessageModel.OPERATION_OK;
+                    msg.data = gson.toJson(res);
+                    out.println(gson.toJson(msg));
+                }
+
+                if (msg.code == MessageModel.SEARCH_PRODUCT) {
+                    ProductSearchModel search = gson.fromJson(msg.data, ProductSearchModel.class);
+                    ProductListModel res = adapter.searchProduct(search);
+                    msg.code = MessageModel.OPERATION_OK;
+                    msg.data = gson.toJson(res);
+                    out.println(gson.toJson(msg));  // answer get purchase history!!!
+                }
+
+                if (msg.code == MessageModel.PUT_USER) {
+                    UserModel user = gson.fromJson(msg.data, UserModel.class);
+                    System.out.println("PUT command with user = " + user);
+                    int res = adapter.saveUser(user);
+                    if (res == IDataAdapter.USER_SAVE_OK) {
+                        msg.code = MessageModel.OPERATION_OK;
+                    }
+                    else {
+                        msg.code = MessageModel.OPERATION_FAILED;
+                    }
+                    out.println(gson.toJson(msg));
+                }
+
+                if (msg.code == MessageModel.GET_USER) {
+                    System.out.println("GET User with username = " + msg.data);
+                    UserModel user = adapter.loadUser(msg.data);
+                    System.out.println(user.toString());
+                    if (user == null) {
+                        msg.code = MessageModel.OPERATION_FAILED;
+                    }
+                    else {
+                        msg.code = MessageModel.OPERATION_OK;
+                        msg.data = gson.toJson(user);
+                    }
+                    out.println(gson.toJson(msg));
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -38,13 +38,36 @@ public class OracleDataAdapter implements IDataAdapter {
     }
 
     @Override
-    public PurchaseHistoryModel loadPurchaseHistory(int customerID) {
+    public PurchaseListModel loadPurchaseHistory(int customerID) {
         return null;
     }
 
     @Override
+    public PurchaseListModel loadAllPurchases() {
+        return null;
+    }
+
+    @Override
+    public ProductListModel searchProduct(ProductSearchModel search) {
+        return null;
+    }
+
+    /*
+    @Override
+    public ProductListModel searchProduct(String name, double minPrice, double maxPrice) {
+        return null;
+    }
+    */
+
+
+    @Override
     public UserModel loadUser(String username) {
         return null;
+    }
+
+    @Override
+    public int saveUser(UserModel user) {
+        return 0;
     }
 
 }

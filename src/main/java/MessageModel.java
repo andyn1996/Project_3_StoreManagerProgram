@@ -16,6 +16,11 @@ public class MessageModel {
     public static final int PUT_PURCHASE = 301;
 
     public static final int GET_PURCHASE_LIST = 500;
+    public static final int GET_ALL_PURCHASES = 501;
+
+    public static final int SEARCH_PRODUCT = 600;
+
+    //public static final int SAVE_USER_INFO = 700;
 
     public static final int OPERATION_OK = 1000; // server responses!
     public static final int OPERATION_FAILED = 1001;

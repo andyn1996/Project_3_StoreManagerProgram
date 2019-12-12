@@ -12,6 +12,8 @@ public class CustomerUI {
     public JButton btnMakePurchase = new JButton("Make a Purchase");
     public JButton btnCancelPurchase = new JButton("Cancel a Purchase");
     public JButton btnViewPurchases = new JButton("View Purchase History");
+    public JButton btnSearchProduct = new JButton("Search Product");
+    public JButton btnChangeUserInfo = new JButton("Change User Info");
 
     public CustomerUI(UserModel user) {
 
@@ -26,7 +28,7 @@ public class CustomerUI {
 
         JLabel title = new JLabel("Store Management System");
 
-        title.setFont (title.getFont ().deriveFont (24.0f));
+        title.setFont(title.getFont ().deriveFont (24.0f));
         view.getContentPane().add(title);
 
         JPanel panelUser = new JPanel(new FlowLayout());
@@ -38,9 +40,14 @@ public class CustomerUI {
         JPanel panelButtons = new JPanel(new FlowLayout());
         panelButtons.add(btnMakePurchase);
         panelButtons.add(btnCancelPurchase);
-        panelButtons.add(btnViewPurchases);
+        panelButtons.add(btnSearchProduct);
+
+        JPanel panelButtons2 = new JPanel(new FlowLayout());
+        panelButtons2.add(btnChangeUserInfo);
+        panelButtons2.add(btnViewPurchases);
 
         view.getContentPane().add(panelButtons);
+        view.getContentPane().add(panelButtons2);
 
 
         btnViewPurchases.addActionListener(new ActionListener() {
@@ -54,8 +61,24 @@ public class CustomerUI {
         btnMakePurchase.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                ManageCustomerUI ui = new ManageCustomerUI();
+                ManagePurchaseCustomerUI ui = new ManagePurchaseCustomerUI(user);
                 ui.run();
+            }
+        });
+
+        btnSearchProduct.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                SearchProductInputUI ui = new SearchProductInputUI(user);
+                ui.view.setVisible(true);
+            }
+        });
+
+        btnChangeUserInfo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                UserChangeInfoUI ui = new UserChangeInfoUI(user);
+                ui.view.setVisible(true);
             }
         });
 
